@@ -207,6 +207,7 @@ CUDA_ROUTINE_HANDLER(DeviceGetStreamPriorityRange);
 
 /* CudaRtHandler_error */
 CUDA_ROUTINE_HANDLER(GetErrorString);
+CUDA_ROUTINE_HANDLER(GetErrorName);
 CUDA_ROUTINE_HANDLER(GetLastError);
 CUDA_ROUTINE_HANDLER(PeekAtLastError);
 
