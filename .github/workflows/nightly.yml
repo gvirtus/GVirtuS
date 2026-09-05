@@ -33,8 +33,11 @@ jobs:
           -DGVIRTUS_BUILD_CUDA_PLUGINS=OFF
           -DGVIRTUS_ENABLE_RDMA=OFF
 
-      - name: Build TCP regression test
-        run: cmake --build build --target tcp-communicator-test --parallel 2
+      - name: Build hardware-independent tests
+        run: >-
+          cmake --build build
+          --target tcp-communicator-test protocol-v2-frame-test protocol-v2-negotiation-test
+          --parallel 2
 
       - name: Run sanitizer tests
         env:

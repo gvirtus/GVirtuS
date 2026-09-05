@@ -8,3 +8,11 @@ if(NOT WIN32)
             GVIRTUS_TCP_NO_PLUGIN_FACTORY)
     add_test(NAME tcp-communicator-lifecycle COMMAND tcp-communicator-test)
 endif()
+
+add_executable(protocol-v2-frame-test protocol/FrameTest.cpp)
+target_link_libraries(protocol-v2-frame-test PRIVATE gvirtus-protocol-v2)
+add_test(NAME protocol-v2-frame COMMAND protocol-v2-frame-test)
+
+add_executable(protocol-v2-negotiation-test protocol/NegotiationTest.cpp)
+target_link_libraries(protocol-v2-negotiation-test PRIVATE gvirtus-protocol-v2)
+add_test(NAME protocol-v2-negotiation COMMAND protocol-v2-negotiation-test)

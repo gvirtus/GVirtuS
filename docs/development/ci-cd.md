@@ -7,8 +7,9 @@ configurations as equivalent.
 
 `ci.yml` runs for pull requests and pushes to `master` and `development`. It
 configures the CPU-only, TCP-only build with CUDA plugins and RDMA disabled,
-then builds and runs the TCP communicator regression test with GCC and Clang in
-Debug and Release modes. It also rejects whitespace errors in changed lines.
+then builds and runs the TCP communicator and Protocol v2 framing regression
+tests with GCC and Clang in Debug and Release modes. It also rejects whitespace
+errors in changed lines.
 
 `nightly.yml` runs the same hardware-independent regression under AddressSanitizer
 and UndefinedBehaviorSanitizer. It can also be started manually.

@@ -47,6 +47,15 @@ target_link_libraries(gvirtus-common stdc++fs ${CMAKE_DL_LIBS} ${LIBLOG4CPLUS})
 ##target_include_directories(gvirtus-common PRIVATE /usr/include/rdma)
 
 gvirtus_install_target(gvirtus-common)
+
+add_library(gvirtus-protocol-v2 STATIC
+        src/protocol/v2/Frame.cpp
+        src/protocol/v2/Negotiation.cpp)
+target_include_directories(gvirtus-protocol-v2 PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
+target_compile_features(gvirtus-protocol-v2 PUBLIC cxx_std_17)
+gvirtus_install_target(gvirtus-protocol-v2)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/nlohmann DESTINATION ${GVIRTUS_HOME}/include)
 install(DIRECTORY ${EXTERNAL_INSTALL_LOCATION}/include/log4cplus DESTINATION ${GVIRTUS_HOME}/include)
 install(DIRECTORY ${EXTERNAL_INSTALL_LOCATION}/lib DESTINATION ${GVIRTUS_HOME})
