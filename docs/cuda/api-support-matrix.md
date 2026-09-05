@@ -17,6 +17,7 @@ end-to-end test has passed.
 | `cudaMallocManaged` | Historical/legacy | Coherence state machine | Registry model | Yes | No |
 | Kernel parameter metadata | Historical registration | Typed registry and safe translation | Yes | Yes | No |
 | `cudaLaunchKernel` | Legacy | Typed launch configuration | Planned | Yes | No |
+| Asynchronous request scheduling | Synchronous RPC path | Correlation, ordering, barriers, backpressure | Request-level model | Yes | No |
 
 Protocol v1 behavior remains available and is not routed through these v2
 structures. GPU-tested status requires a CUDA-capable frontend/backend CI run;

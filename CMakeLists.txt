@@ -50,6 +50,7 @@ target_link_libraries(gvirtus-common stdc++fs ${CMAKE_DL_LIBS} ${LIBLOG4CPLUS})
 gvirtus_install_target(gvirtus-common)
 
 add_library(gvirtus-protocol-v2 STATIC
+        src/protocol/v2/AsyncEngine.cpp
         src/protocol/v2/CudaAbi.cpp
         src/protocol/v2/CudartMemory.cpp
         src/protocol/v2/Connection.cpp

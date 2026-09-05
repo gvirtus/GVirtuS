@@ -58,6 +58,11 @@ target_link_libraries(protocol-v2-kernel-metadata-test PRIVATE
 add_test(NAME protocol-v2-kernel-metadata
         COMMAND protocol-v2-kernel-metadata-test)
 
+add_executable(protocol-v2-async-engine-test protocol/AsyncEngineTest.cpp)
+target_link_libraries(protocol-v2-async-engine-test PRIVATE
+        gvirtus-protocol-v2)
+add_test(NAME protocol-v2-async-engine COMMAND protocol-v2-async-engine-test)
+
 add_custom_target(gvirtus-hardware-independent-tests DEPENDS
         tcp-communicator-test
         protocol-v2-frame-test
@@ -68,4 +73,5 @@ add_custom_target(gvirtus-hardware-independent-tests DEPENDS
         protocol-v2-cuda-abi-test
         protocol-v2-cudart-memory-test
         protocol-v2-managed-memory-test
-        protocol-v2-kernel-metadata-test)
+        protocol-v2-kernel-metadata-test
+        protocol-v2-async-engine-test)
