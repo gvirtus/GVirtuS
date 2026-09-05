@@ -12,6 +12,7 @@ namespace gvirtus::protocol::v2 {
 constexpr std::uint16_t kCudaAbiVersion = 1;
 constexpr std::size_t kWireLaunchConfigurationSize = 56;
 constexpr std::size_t kWireKernelParameterSize = 24;
+constexpr std::size_t kWireMemoryEndpointSize = 32;
 
 struct Dim3 {
   std::uint32_t x = 1;
@@ -124,6 +125,17 @@ std::array<std::byte, kWireKernelParameterSize> Encode(
     const KernelParameterDescriptor &parameter);
 ParameterDecodeResult DecodeKernelParameter(const std::byte *wire,
                                             std::size_t wire_size);
+
+struct EndpointDecodeResult {
+  MemoryEndpoint endpoint{};
+  AbiError error = AbiError::None;
+  explicit operator bool() const { return error == AbiError::None; }
+};
+
+std::array<std::byte, kWireMemoryEndpointSize> Encode(
+    const MemoryEndpoint &endpoint);
+EndpointDecodeResult DecodeMemoryEndpoint(const std::byte *wire,
+                                          std::size_t wire_size);
 
 const char *ToString(AbiError error);
 

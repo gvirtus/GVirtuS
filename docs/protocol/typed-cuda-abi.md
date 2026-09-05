@@ -24,6 +24,7 @@ zero-sized parameters, non-power-of-two alignment, misaligned offsets, and
 offset arithmetic overflow. Pitched layouts require a pitch at least as large
 as the logical row width and overflow-safe total-size arithmetic.
 
-The first encoded structures are the 56-byte launch configuration and 24-byte
-kernel-parameter descriptor. Additional compound copy encodings will compose
-these primitives rather than importing native `cudaMemcpy3DParms` layout.
+The encoded structures include the 56-byte launch configuration, 24-byte
+kernel-parameter descriptor, and 32-byte memory endpoint. Compound copy
+requests compose these primitives rather than importing native
+`cudaMemcpy3DParms` layout.

@@ -50,6 +50,7 @@ gvirtus_install_target(gvirtus-common)
 
 add_library(gvirtus-protocol-v2 STATIC
         src/protocol/v2/CudaAbi.cpp
+        src/protocol/v2/CudartMemory.cpp
         src/protocol/v2/Connection.cpp
         src/protocol/v2/Frame.cpp
         src/protocol/v2/Negotiation.cpp

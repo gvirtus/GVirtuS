@@ -175,6 +175,32 @@ ParameterDecodeResult DecodeKernelParameter(const std::byte *wire,
   return {parameter, Validate(parameter)};
 }
 
+std::array<std::byte, kWireMemoryEndpointSize> Encode(
+    const MemoryEndpoint &endpoint) {
+  std::array<std::byte, kWireMemoryEndpointSize> wire{};
+  wire[0] = static_cast<std::byte>(endpoint.kind);
+  Store64(wire.data() + 8, endpoint.identity);
+  Store64(wire.data() + 16, endpoint.byte_offset);
+  Store64(wire.data() + 24, endpoint.byte_length);
+  return wire;
+}
+
+EndpointDecodeResult DecodeMemoryEndpoint(const std::byte *wire,
+                                          std::size_t wire_size) {
+  if (wire == nullptr || wire_size < kWireMemoryEndpointSize)
+    return {{}, AbiError::Truncated};
+  for (std::size_t index = 1; index < 8; ++index) {
+    if (wire[index] != std::byte{0})
+      return {{}, AbiError::InvalidReservedField};
+  }
+  MemoryEndpoint endpoint;
+  endpoint.kind = static_cast<MemoryEndpointKind>(wire[0]);
+  endpoint.identity = Load64(wire + 8);
+  endpoint.byte_offset = Load64(wire + 16);
+  endpoint.byte_length = Load64(wire + 24);
+  return {endpoint, Validate(endpoint)};
+}
+
 const char *ToString(AbiError error) {
   switch (error) {
     case AbiError::None: return "none";
