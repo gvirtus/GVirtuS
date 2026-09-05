@@ -58,6 +58,7 @@ add_library(gvirtus-protocol-v2 STATIC
         src/protocol/v2/KernelMetadata.cpp
         src/protocol/v2/ManagedMemory.cpp
         src/protocol/v2/Message.cpp
+        src/protocol/v2/MessageStream.cpp
         src/protocol/v2/Negotiation.cpp
         src/protocol/v2/VirtualMemory.cpp
         src/protocol/v2/VirtualObjects.cpp)

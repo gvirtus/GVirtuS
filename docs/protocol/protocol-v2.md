@@ -49,6 +49,14 @@ storage and rejects both truncated payloads and trailing bytes. Consequently a
 caller must present exactly one complete Protocol v2 message; stream transports
 must first collect the fixed header and then precisely its declared payload.
 
+`MessageStreamDecoder` provides that stream boundary for TCP and other byte
+streams. It accepts arbitrary fragments and coalesced frames, validates every
+header before allocating its payload, and retains only a configured maximum of
+unparsed bytes and completed messages. Malformed headers or either limit being
+exceeded moves the decoder to a terminal failed state so bytes following
+corrupt or unconsumed input cannot be misinterpreted as a new request. Reuse
+requires an explicit reset for a new connection/session.
+
 Negotiation policy, connection auto-detection, and Protocol v1/v2 routing are
 intentionally deferred to the Protocol v2 integration increment.
 
