@@ -27,3 +27,10 @@ target_link_libraries(protocol-v2-virtual-memory-test PRIVATE
         gvirtus-protocol-v2)
 add_test(NAME protocol-v2-virtual-memory
         COMMAND protocol-v2-virtual-memory-test)
+
+add_executable(protocol-v2-virtual-objects-test
+        virtualization/VirtualObjectsTest.cpp)
+target_link_libraries(protocol-v2-virtual-objects-test PRIVATE
+        gvirtus-protocol-v2)
+add_test(NAME protocol-v2-virtual-objects
+        COMMAND protocol-v2-virtual-objects-test)

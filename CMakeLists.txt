@@ -52,7 +52,8 @@ add_library(gvirtus-protocol-v2 STATIC
         src/protocol/v2/Connection.cpp
         src/protocol/v2/Frame.cpp
         src/protocol/v2/Negotiation.cpp
-        src/protocol/v2/VirtualMemory.cpp)
+        src/protocol/v2/VirtualMemory.cpp
+        src/protocol/v2/VirtualObjects.cpp)
 target_include_directories(gvirtus-protocol-v2 PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
