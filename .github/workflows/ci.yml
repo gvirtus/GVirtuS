@@ -54,7 +54,7 @@ jobs:
       - name: Build hardware-independent tests
         run: >-
           cmake --build build
-          --target tcp-communicator-test protocol-v2-frame-test protocol-v2-negotiation-test protocol-v2-connection-test
+          --target tcp-communicator-test protocol-v2-frame-test protocol-v2-negotiation-test protocol-v2-connection-test protocol-v2-virtual-memory-test
           --parallel 2
 
       - name: Run tests
