@@ -4,6 +4,7 @@ project(GVirtuS)
 option(GVIRTUS_ENABLE_RDMA "Build the legacy RDMA communicator" OFF)
 option(GVIRTUS_BUILD_TESTS "Build GVirtuS unit tests" OFF)
 option(GVIRTUS_BUILD_CUDA_PLUGINS "Build CUDA API frontend/backend plugins" ON)
+option(GVIRTUS_BUILD_EXAMPLES "Build GVirtuS examples" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS ON)
@@ -53,6 +54,7 @@ add_library(gvirtus-protocol-v2 STATIC
         src/protocol/v2/CudartMemory.cpp
         src/protocol/v2/Connection.cpp
         src/protocol/v2/Frame.cpp
+        src/protocol/v2/ManagedMemory.cpp
         src/protocol/v2/Negotiation.cpp
         src/protocol/v2/VirtualMemory.cpp
         src/protocol/v2/VirtualObjects.cpp)
@@ -127,4 +129,8 @@ endif()
 if(GVIRTUS_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
+endif()
+
+if(GVIRTUS_BUILD_EXAMPLES)
+    add_subdirectory(examples)
 endif()
