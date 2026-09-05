@@ -66,6 +66,8 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
 
       - name: Reject whitespace errors
         run: git diff --check HEAD^
