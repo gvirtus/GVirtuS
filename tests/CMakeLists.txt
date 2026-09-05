@@ -7,6 +7,10 @@ if(NOT WIN32)
     target_compile_definitions(tcp-communicator-test PRIVATE
             GVIRTUS_TCP_NO_PLUGIN_FACTORY)
     add_test(NAME tcp-communicator-lifecycle COMMAND tcp-communicator-test)
+
+    add_executable(tcp-transport-v2-test transport/TcpTransportV2Test.cpp)
+    target_link_libraries(tcp-transport-v2-test PRIVATE gvirtus-transport-v2)
+    add_test(NAME tcp-transport-v2 COMMAND tcp-transport-v2-test)
 endif()
 
 add_executable(protocol-v2-frame-test protocol/FrameTest.cpp)
@@ -70,6 +74,7 @@ add_test(NAME transport-v2-contract COMMAND transport-v2-contract-test)
 
 add_custom_target(gvirtus-hardware-independent-tests DEPENDS
         tcp-communicator-test
+        tcp-transport-v2-test
         protocol-v2-frame-test
         protocol-v2-negotiation-test
         protocol-v2-connection-test

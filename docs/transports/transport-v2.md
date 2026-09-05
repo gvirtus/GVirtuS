@@ -26,6 +26,10 @@ Statistics have common counters for control and bulk operations, bytes,
 progress calls, stalls, and failures. Transport-specific metrics may extend
 these without changing the portable interface.
 
-This increment provides the contract and CPU unit tests. It does not claim a
-TLS, UCX, InfiniBand, RoCE, or GPU-direct implementation. Those transports must
-be integrated and tested independently, including on the required hardware.
+The first concrete implementation is nonblocking TCP. It provides bounded
+control and host-memory bulk queues and is the portable fallback. See
+`docs/transports/tcp.md` for its exact behavior and security limitations.
+
+The implementation and tests are CPU-only. They do not claim TLS, UCX,
+InfiniBand, RoCE, or GPU-direct support. Those transports must be integrated
+and tested independently, including on the required hardware.
