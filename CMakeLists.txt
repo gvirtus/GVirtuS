@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.17)
 project(GVirtuS)
 
+option(GVIRTUS_ENABLE_RDMA "Build the legacy RDMA communicator" OFF)
+option(GVIRTUS_BUILD_TESTS "Build GVirtuS unit tests" OFF)
+option(GVIRTUS_BUILD_CUDA_PLUGINS "Build CUDA API frontend/backend plugins" ON)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS ON)
 
@@ -37,7 +41,7 @@ add_library(gvirtus-common SHARED
 
 add_dependencies(gvirtus-common log4cplus)
 
-target_link_libraries(gvirtus-common stdc++fs ${CMAKE_DL_LIBS} ${LIBLOG4CPLUS} rdmacm ibverbs)
+target_link_libraries(gvirtus-common stdc++fs ${CMAKE_DL_LIBS} ${LIBLOG4CPLUS})
 
 ##target_include_directories(gvirtus-common PRIVATE /usr/include/infiniband)
 ##target_include_directories(gvirtus-common PRIVATE /usr/include/rdma)
@@ -54,10 +58,9 @@ add_library(gvirtus-communicators SHARED
         src/communicators/Endpoint_Tcp.cpp
         src/communicators/Endpoint_Rdma.cpp
         src/communicators/EndpointFactory.cpp
-        src/communicators/rdma/ktmrdma.cpp
         src/communicators/Result.cpp
         )
-target_link_libraries(gvirtus-communicators gvirtus-common rdmacm ibverbs)
+target_link_libraries(gvirtus-communicators gvirtus-common)
 gvirtus_install_target(gvirtus-communicators)
 
 ## TCP COMMUNICATOR
@@ -66,15 +69,21 @@ add_library(gvirtus-communicators-tcp SHARED
 target_link_libraries(gvirtus-communicators-tcp gvirtus-communicators)
 gvirtus_install_target(gvirtus-communicators-tcp)
 
-## IB COMMUNICATOR
-## TODO: PROPERLY SETUP CMAKE AND PROJECT TO USE RDMA
-add_library(gvirtus-communicators-ib SHARED
-        src/communicators/rdma/ktmrdma.cpp
-        src/communicators/rdma/RdmaCommunicator.cpp
-        )
-##target_include_directories(gvirtus-communicators-ib PUBLIC /usr/include/infiniband /usr/include/rdma /src/communicators/rdma)
-target_link_libraries(gvirtus-communicators-ib gvirtus-communicators rdmacm ibverbs)
-gvirtus_install_target(gvirtus-communicators-ib)
+if(GVIRTUS_ENABLE_RDMA)
+    find_path(GVIRTUS_RDMA_INCLUDE_DIR rdma/rdma_cma.h REQUIRED)
+    find_library(GVIRTUS_RDMACM_LIBRARY rdmacm REQUIRED)
+    find_library(GVIRTUS_IBVERBS_LIBRARY ibverbs REQUIRED)
+
+    add_library(gvirtus-communicators-ib SHARED
+            src/communicators/rdma/ktmrdma.cpp
+            src/communicators/rdma/RdmaCommunicator.cpp)
+    target_include_directories(gvirtus-communicators-ib PRIVATE ${GVIRTUS_RDMA_INCLUDE_DIR})
+    target_link_libraries(gvirtus-communicators-ib PRIVATE
+            gvirtus-communicators
+            ${GVIRTUS_RDMACM_LIBRARY}
+            ${GVIRTUS_IBVERBS_LIBRARY})
+    gvirtus_install_target(gvirtus-communicators-ib)
+endif()
 
 add_library(gvirtus-frontend SHARED
         src/frontend/Frontend.cpp)
@@ -86,16 +95,22 @@ add_executable(gvirtus-backend
         src/backend/main.cpp
         src/backend/Process.cpp
         src/backend/Property.cpp)
-target_link_libraries(gvirtus-backend gvirtus-communicators Threads::Threads rdmacm ibverbs)
+target_link_libraries(gvirtus-backend gvirtus-communicators Threads::Threads)
 gvirtus_install_target(gvirtus-backend)
 
-add_subdirectory(plugins/cublas)
-add_subdirectory(plugins/cudart)
-add_subdirectory(plugins/cufft)
-add_subdirectory(plugins/curand)
-add_subdirectory(plugins/cudnn)
-#add_subdirectory(plugins/cusolver)
-#add_subdirectory(plugins/cusparse)
+if(GVIRTUS_BUILD_CUDA_PLUGINS)
+    add_subdirectory(plugins/cublas)
+    add_subdirectory(plugins/cudart)
+    add_subdirectory(plugins/cufft)
+    add_subdirectory(plugins/curand)
+    add_subdirectory(plugins/cudnn)
+    #add_subdirectory(plugins/cusolver)
+    #add_subdirectory(plugins/cusparse)
+endif()
 
 #add_subdirectory(tools/protocol-generator)
 
+if(GVIRTUS_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

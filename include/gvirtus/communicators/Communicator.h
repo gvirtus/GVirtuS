@@ -41,7 +41,7 @@ class Communicator {
    *
    * @return a Communicator to the connected peer.
    */
-  virtual const Communicator *const Accept() const = 0;
+  virtual const Communicator *Accept() const = 0;
 
   /**
    * Sets the communicator as a client and connects it to the end point

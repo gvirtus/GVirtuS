@@ -1,0 +1,43 @@
+name: Nightly validation
+
+on:
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sanitizers:
+    name: TCP test with ASan and UBSan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+
+      - name: Configure sanitizer build
+        env:
+          CC: clang
+          CXX: clang++
+        run: >-
+          cmake -S . -B build
+          -DCMAKE_BUILD_TYPE=Debug
+          -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer"
+          -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address,undefined"
+          -DGVIRTUS_BUILD_TESTS=ON
+          -DGVIRTUS_BUILD_CUDA_PLUGINS=OFF
+          -DGVIRTUS_ENABLE_RDMA=OFF
+
+      - name: Build TCP regression test
+        run: cmake --build build --target tcp-communicator-test --parallel 2
+
+      - name: Run sanitizer tests
+        env:
+          ASAN_OPTIONS: detect_leaks=1:halt_on_error=1
+          UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+        run: ctest --test-dir build --output-on-failure

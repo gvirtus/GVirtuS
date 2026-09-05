@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  source-release:
+    name: Validate and publish source release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Configure CPU/TCP validation
+        run: >-
+          cmake -S . -B build
+          -DCMAKE_BUILD_TYPE=Release
+          -DGVIRTUS_BUILD_TESTS=ON
+          -DGVIRTUS_BUILD_CUDA_PLUGINS=OFF
+          -DGVIRTUS_ENABLE_RDMA=OFF
+
+      - name: Build and test
+        run: |
+          cmake --build build --target tcp-communicator-test --parallel 2
+          ctest --test-dir build --output-on-failure
+
+      - name: Create source archive and checksum
+        id: package
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME:-manual-${GITHUB_SHA::12}}"
+          archive="GVirtuS-${version}.tar.gz"
+          git archive --format=tar.gz --prefix="GVirtuS-${version}/" -o "$archive" HEAD
+          sha256sum "$archive" > "${archive}.sha256"
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: gvirtus-source-${{ github.ref_name }}
+          path: |
+            ${{ steps.package.outputs.archive }}
+            ${{ steps.package.outputs.archive }}.sha256
+          if-no-files-found: error
+
+      - name: Publish GitHub release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARCHIVE: ${{ steps.package.outputs.archive }}
+        run: >-
+          gh release create "$GITHUB_REF_NAME"
+          "$ARCHIVE"
+          "$ARCHIVE.sha256"
+          --verify-tag
+          --generate-notes
+          --title "GVirtuS $GITHUB_REF_NAME"

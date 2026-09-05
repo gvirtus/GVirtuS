@@ -35,12 +35,6 @@
 
 #pragma once
 
-#ifdef _WIN32
-#include <fstream>
-#else
-#include <ext/stdio_filebuf.h>
-#endif
-
 #include "gvirtus/communicators/Communicator.h"
 
 namespace gvirtus::communicators {
@@ -53,32 +47,22 @@ class TcpCommunicator : public Communicator {
   TcpCommunicator(const std::string &communicator);
   TcpCommunicator(const char *hostname, short port);
   TcpCommunicator(int fd, const char *hostname);
-  virtual ~TcpCommunicator();
-  void Serve();
-  const Communicator *const Accept() const;
-  void Connect();
-  size_t Read(char *buffer, size_t size);
-  size_t Write(const char *buffer, size_t size);
-  void Sync();
-  void Close();
+  ~TcpCommunicator() override;
+  void Serve() override;
+  const Communicator *Accept() const override;
+  void Connect() override;
+  size_t Read(char *buffer, size_t size) override;
+  size_t Write(const char *buffer, size_t size) override;
+  void Sync() override;
+  void Close() override;
 
   std::string to_string() override { return "tcpcommunicator"; }
 
  private:
-  void InitializeStream();
-  std::istream *mpInput;
-  std::ostream *mpOutput;
   std::string mHostname;
-  char *mInAddr;
-  int mInAddrSize;
-  short mPort;
-  int mSocketFd;
-#ifdef _WIN32
-  std::filebuf *mpInputBuf;
-  std::filebuf *mpOutputBuf;
-#else
-  __gnu_cxx::stdio_filebuf<char> *mpInputBuf;
-  __gnu_cxx::stdio_filebuf<char> *mpOutputBuf;
-#endif
+  char *mInAddr = nullptr;
+  int mInAddrSize = 0;
+  short mPort = 0;
+  int mSocketFd = -1;
 };
 }  // namespace gvirtus::communicators

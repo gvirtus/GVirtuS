@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - development
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tcp-unit-tests:
+    name: TCP unit tests (${{ matrix.compiler }}, ${{ matrix.build_type }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - gcc
+          - clang
+        build_type:
+          - Debug
+          - Release
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+
+      - name: Select compiler
+        run: |
+          if [[ "${{ matrix.compiler }}" == "clang" ]]; then
+            echo "CC=clang" >> "$GITHUB_ENV"
+            echo "CXX=clang++" >> "$GITHUB_ENV"
+          else
+            echo "CC=gcc" >> "$GITHUB_ENV"
+            echo "CXX=g++" >> "$GITHUB_ENV"
+          fi
+
+      - name: Configure CPU/TCP build
+        run: >-
+          cmake -S . -B build
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DGVIRTUS_BUILD_TESTS=ON
+          -DGVIRTUS_BUILD_CUDA_PLUGINS=OFF
+          -DGVIRTUS_ENABLE_RDMA=OFF
+
+      - name: Build TCP regression test
+        run: cmake --build build --target tcp-communicator-test --parallel 2
+
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure
+
+  source-hygiene:
+    name: Source hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+
+      - name: Reject whitespace errors
+        run: git diff --check HEAD^
+        if: github.event_name == 'push' && github.event.before != '0000000000000000000000000000000000000000'
+
+      - name: Reject whitespace errors in pull request
+        run: git diff --check "${{ github.event.pull_request.base.sha }}"
+        if: github.event_name == 'pull_request'
