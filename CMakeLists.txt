@@ -73,7 +73,8 @@ add_library(gvirtus-transport-v2 STATIC
         src/transport/v2/Transport.cpp)
 if(NOT WIN32)
     target_sources(gvirtus-transport-v2 PRIVATE
-            src/transport/v2/TcpTransport.cpp)
+            src/transport/v2/TcpTransport.cpp
+            src/transport/v2/UnixSocketTransport.cpp)
 endif()
 target_include_directories(gvirtus-transport-v2 PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

@@ -17,6 +17,13 @@ if(NOT WIN32)
     add_executable(tcp-transport-v2-test transport/TcpTransportV2Test.cpp)
     target_link_libraries(tcp-transport-v2-test PRIVATE gvirtus-transport-v2)
     add_test(NAME tcp-transport-v2 COMMAND tcp-transport-v2-test)
+
+    add_executable(unix-socket-transport-v2-test
+            transport/UnixSocketTransportTest.cpp)
+    target_link_libraries(unix-socket-transport-v2-test PRIVATE
+            gvirtus-transport-v2)
+    add_test(NAME unix-socket-transport-v2
+            COMMAND unix-socket-transport-v2-test)
 endif()
 
 add_executable(protocol-v2-frame-test protocol/FrameTest.cpp)
@@ -95,6 +102,7 @@ add_test(NAME transport-v2-selection COMMAND transport-v2-selection-test)
 add_custom_target(gvirtus-hardware-independent-tests DEPENDS
         tcp-communicator-test
         tcp-transport-v2-test
+        unix-socket-transport-v2-test
         protocol-v2-frame-test
         protocol-v2-message-test
         protocol-v2-message-stream-test

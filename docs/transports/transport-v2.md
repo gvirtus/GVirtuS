@@ -29,6 +29,8 @@ these without changing the portable interface.
 The first concrete implementation is nonblocking TCP. It provides bounded
 control and host-memory bulk queues and is the portable fallback. See
 `docs/transports/tcp.md` for its exact behavior and security limitations.
+Local Unix-domain stream sockets provide the same queue semantics without an
+IP network path; see `docs/transports/unix-socket.md`.
 
 The implementation and tests are CPU-only. They do not claim TLS, UCX,
 InfiniBand, RoCE, or GPU-direct support. Those transports must be integrated
