@@ -33,3 +33,15 @@ control and host-memory bulk queues and is the portable fallback. See
 The implementation and tests are CPU-only. They do not claim TLS, UCX,
 InfiniBand, RoCE, or GPU-direct support. Those transports must be integrated
 and tested independently, including on the required hardware.
+
+## Transport selection
+
+The selection policy filters unavailable transports and checks control/bulk
+sizes, outstanding-request and scatter/gather limits, encryption, and memory
+capabilities before ranking candidates. A device-memory transfer may use a
+registered-host staging path only when the request explicitly permits it.
+
+Priority is the primary rank, followed by an optional soft preference and
+capability richness. A hard transport preference never falls back. Encryption
+and direct-device requirements also never downgrade silently. Stable input
+order breaks otherwise equal ranks, making the decision reproducible.

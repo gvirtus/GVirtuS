@@ -69,6 +69,7 @@ target_compile_features(gvirtus-protocol-v2 PUBLIC cxx_std_17)
 gvirtus_install_target(gvirtus-protocol-v2)
 
 add_library(gvirtus-transport-v2 STATIC
+        src/transport/v2/Selection.cpp
         src/transport/v2/Transport.cpp)
 if(NOT WIN32)
     target_sources(gvirtus-transport-v2 PRIVATE

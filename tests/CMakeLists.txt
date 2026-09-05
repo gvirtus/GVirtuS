@@ -88,6 +88,10 @@ target_link_libraries(transport-v2-contract-test PRIVATE
         gvirtus-transport-v2 Threads::Threads)
 add_test(NAME transport-v2-contract COMMAND transport-v2-contract-test)
 
+add_executable(transport-v2-selection-test transport/SelectionTest.cpp)
+target_link_libraries(transport-v2-selection-test PRIVATE gvirtus-transport-v2)
+add_test(NAME transport-v2-selection COMMAND transport-v2-selection-test)
+
 add_custom_target(gvirtus-hardware-independent-tests DEPENDS
         tcp-communicator-test
         tcp-transport-v2-test
@@ -104,3 +108,5 @@ add_custom_target(gvirtus-hardware-independent-tests DEPENDS
         protocol-v2-kernel-metadata-test
         protocol-v2-async-engine-test
         transport-v2-contract-test)
+add_dependencies(gvirtus-hardware-independent-tests
+        transport-v2-selection-test)
