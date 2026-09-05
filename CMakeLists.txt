@@ -65,6 +65,14 @@ target_include_directories(gvirtus-protocol-v2 PUBLIC
         $<INSTALL_INTERFACE:include>)
 target_compile_features(gvirtus-protocol-v2 PUBLIC cxx_std_17)
 gvirtus_install_target(gvirtus-protocol-v2)
+
+add_library(gvirtus-transport-v2 STATIC
+        src/transport/v2/Transport.cpp)
+target_include_directories(gvirtus-transport-v2 PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
+target_compile_features(gvirtus-transport-v2 PUBLIC cxx_std_17)
+gvirtus_install_target(gvirtus-transport-v2)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/nlohmann DESTINATION ${GVIRTUS_HOME}/include)
 install(DIRECTORY ${EXTERNAL_INSTALL_LOCATION}/include/log4cplus DESTINATION ${GVIRTUS_HOME}/include)
 install(DIRECTORY ${EXTERNAL_INSTALL_LOCATION}/lib DESTINATION ${GVIRTUS_HOME})
