@@ -23,6 +23,10 @@ add_executable(protocol-v2-frame-test protocol/FrameTest.cpp)
 target_link_libraries(protocol-v2-frame-test PRIVATE gvirtus-protocol-v2)
 add_test(NAME protocol-v2-frame COMMAND protocol-v2-frame-test)
 
+add_executable(protocol-v2-message-test protocol/MessageTest.cpp)
+target_link_libraries(protocol-v2-message-test PRIVATE gvirtus-protocol-v2)
+add_test(NAME protocol-v2-message COMMAND protocol-v2-message-test)
+
 add_executable(protocol-v2-negotiation-test protocol/NegotiationTest.cpp)
 target_link_libraries(protocol-v2-negotiation-test PRIVATE gvirtus-protocol-v2)
 add_test(NAME protocol-v2-negotiation COMMAND protocol-v2-negotiation-test)
@@ -82,6 +86,7 @@ add_custom_target(gvirtus-hardware-independent-tests DEPENDS
         tcp-communicator-test
         tcp-transport-v2-test
         protocol-v2-frame-test
+        protocol-v2-message-test
         protocol-v2-negotiation-test
         protocol-v2-connection-test
         protocol-v2-virtual-memory-test

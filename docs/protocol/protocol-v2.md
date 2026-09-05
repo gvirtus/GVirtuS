@@ -42,6 +42,13 @@ versions, unknown message types, payload lengths above the caller's negotiated
 limit, and invalid checksums before allocating or reading a payload. The
 default payload ceiling is 64 MiB.
 
+The message codec joins this header to an exact-length payload for transport.
+Encoding rejects null payloads, length mismatches, negotiated-limit violations,
+and size overflow. Decoding validates the header before allocating payload
+storage and rejects both truncated payloads and trailing bytes. Consequently a
+caller must present exactly one complete Protocol v2 message; stream transports
+must first collect the fixed header and then precisely its declared payload.
+
 Negotiation policy, connection auto-detection, and Protocol v1/v2 routing are
 intentionally deferred to the Protocol v2 integration increment.
 
