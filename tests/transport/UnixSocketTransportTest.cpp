@@ -5,6 +5,7 @@
 
 #include <array>
 #include <cassert>
+#include <stdexcept>
 
 using namespace gvirtus::transport::v2;
 
