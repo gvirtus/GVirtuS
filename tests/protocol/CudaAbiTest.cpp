@@ -32,6 +32,7 @@ int main() {
   assert(Validate(launch) == AbiError::InvalidDimension);
 
   KernelParameterDescriptor parameter;
+  parameter.index = 1;
   parameter.ordinal = 2;
   parameter.offset = 16;
   parameter.size = 8;
@@ -44,6 +45,7 @@ int main() {
   assert(decoded_parameter.parameter.kind ==
          KernelParameterKind::DevicePointer);
   assert(decoded_parameter.parameter.offset == 16);
+  assert(decoded_parameter.parameter.index == 1);
 
   parameter.offset = 3;
   assert(Validate(parameter) == AbiError::InvalidParameterOffset);

@@ -95,6 +95,14 @@ AbiError Validate(const MemoryEndpoint &endpoint) {
 AbiError Validate(const KernelParameterDescriptor &parameter) {
   if (!IsValidParameterKind(parameter.kind))
     return AbiError::InvalidParameterKind;
+  if (parameter.kind == KernelParameterKind::ObjectHandle) {
+    const auto object_type = static_cast<std::uint8_t>(parameter.object_type);
+    if (object_type < static_cast<std::uint8_t>(ObjectType::Stream) ||
+        object_type > static_cast<std::uint8_t>(ObjectType::Descriptor))
+      return AbiError::InvalidParameterKind;
+  } else if (static_cast<std::uint8_t>(parameter.object_type) != 0) {
+    return AbiError::InvalidParameterKind;
+  }
   if (parameter.size == 0) return AbiError::InvalidParameterSize;
   if (!IsPowerOfTwo(parameter.alignment))
     return AbiError::InvalidParameterAlignment;
@@ -150,11 +158,13 @@ LaunchDecodeResult DecodeLaunch(const std::byte *wire,
 std::array<std::byte, kWireKernelParameterSize> Encode(
     const KernelParameterDescriptor &parameter) {
   std::array<std::byte, kWireKernelParameterSize> wire{};
-  Store32(wire.data(), parameter.ordinal);
-  Store32(wire.data() + 4, parameter.offset);
-  Store32(wire.data() + 8, parameter.size);
-  Store32(wire.data() + 12, parameter.alignment);
-  wire[16] = static_cast<std::byte>(parameter.kind);
+  Store32(wire.data(), parameter.index);
+  Store32(wire.data() + 4, parameter.ordinal);
+  Store32(wire.data() + 8, parameter.offset);
+  Store32(wire.data() + 12, parameter.size);
+  Store32(wire.data() + 16, parameter.alignment);
+  wire[20] = static_cast<std::byte>(parameter.kind);
+  wire[21] = static_cast<std::byte>(parameter.object_type);
   return wire;
 }
 
@@ -162,16 +172,18 @@ ParameterDecodeResult DecodeKernelParameter(const std::byte *wire,
                                             std::size_t wire_size) {
   if (wire == nullptr || wire_size < kWireKernelParameterSize)
     return {{}, AbiError::Truncated};
-  for (std::size_t index = 17; index < kWireKernelParameterSize; ++index) {
+  for (std::size_t index = 22; index < kWireKernelParameterSize; ++index) {
     if (wire[index] != std::byte{0})
       return {{}, AbiError::InvalidReservedField};
   }
   KernelParameterDescriptor parameter;
-  parameter.ordinal = Load32(wire);
-  parameter.offset = Load32(wire + 4);
-  parameter.size = Load32(wire + 8);
-  parameter.alignment = Load32(wire + 12);
-  parameter.kind = static_cast<KernelParameterKind>(wire[16]);
+  parameter.index = Load32(wire);
+  parameter.ordinal = Load32(wire + 4);
+  parameter.offset = Load32(wire + 8);
+  parameter.size = Load32(wire + 12);
+  parameter.alignment = Load32(wire + 16);
+  parameter.kind = static_cast<KernelParameterKind>(wire[20]);
+  parameter.object_type = static_cast<ObjectType>(wire[21]);
   return {parameter, Validate(parameter)};
 }
 

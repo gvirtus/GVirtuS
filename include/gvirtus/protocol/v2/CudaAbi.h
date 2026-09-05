@@ -11,7 +11,7 @@ namespace gvirtus::protocol::v2 {
 
 constexpr std::uint16_t kCudaAbiVersion = 1;
 constexpr std::size_t kWireLaunchConfigurationSize = 56;
-constexpr std::size_t kWireKernelParameterSize = 24;
+constexpr std::size_t kWireKernelParameterSize = 32;
 constexpr std::size_t kWireMemoryEndpointSize = 32;
 
 struct Dim3 {
@@ -68,11 +68,13 @@ enum class KernelParameterKind : std::uint8_t {
 };
 
 struct KernelParameterDescriptor {
+  std::uint32_t index = 0;
   std::uint32_t ordinal = 0;
   std::uint32_t offset = 0;
   std::uint32_t size = 0;
   std::uint32_t alignment = 0;
   KernelParameterKind kind = KernelParameterKind::Scalar;
+  ObjectType object_type = static_cast<ObjectType>(0);
 };
 
 struct LaunchConfiguration {

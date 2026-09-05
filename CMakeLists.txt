@@ -54,6 +54,7 @@ add_library(gvirtus-protocol-v2 STATIC
         src/protocol/v2/CudartMemory.cpp
         src/protocol/v2/Connection.cpp
         src/protocol/v2/Frame.cpp
+        src/protocol/v2/KernelMetadata.cpp
         src/protocol/v2/ManagedMemory.cpp
         src/protocol/v2/Negotiation.cpp
         src/protocol/v2/VirtualMemory.cpp

@@ -51,6 +51,13 @@ target_link_libraries(protocol-v2-managed-memory-test PRIVATE
 add_test(NAME protocol-v2-managed-memory
         COMMAND protocol-v2-managed-memory-test)
 
+add_executable(protocol-v2-kernel-metadata-test
+        kernel_metadata/KernelMetadataTest.cpp)
+target_link_libraries(protocol-v2-kernel-metadata-test PRIVATE
+        gvirtus-protocol-v2)
+add_test(NAME protocol-v2-kernel-metadata
+        COMMAND protocol-v2-kernel-metadata-test)
+
 add_custom_target(gvirtus-hardware-independent-tests DEPENDS
         tcp-communicator-test
         protocol-v2-frame-test
@@ -60,4 +67,5 @@ add_custom_target(gvirtus-hardware-independent-tests DEPENDS
         protocol-v2-virtual-objects-test
         protocol-v2-cuda-abi-test
         protocol-v2-cudart-memory-test
-        protocol-v2-managed-memory-test)
+        protocol-v2-managed-memory-test
+        protocol-v2-kernel-metadata-test)

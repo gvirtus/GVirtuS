@@ -15,7 +15,7 @@ end-to-end test has passed.
 | `cudaMemcpy3D` | Native-layout legacy | Typed request | Endpoint model | Yes | No |
 | `cudaMemcpy3DAsync` | Stub | Typed request | Endpoint model | Yes | No |
 | `cudaMallocManaged` | Historical/legacy | Coherence state machine | Registry model | Yes | No |
-| Kernel parameter metadata | Historical registration | Typed descriptor | Planned | Yes | No |
+| Kernel parameter metadata | Historical registration | Typed registry and safe translation | Yes | Yes | No |
 | `cudaLaunchKernel` | Legacy | Typed launch configuration | Planned | Yes | No |
 
 Protocol v1 behavior remains available and is not routed through these v2
