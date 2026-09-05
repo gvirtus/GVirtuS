@@ -1,3 +1,9 @@
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    # Tests use assert for both checks and fixture setup. Keep those checks
+    # active in Release configurations as well.
+    add_compile_options(-UNDEBUG)
+endif()
+
 if(NOT WIN32)
     add_executable(tcp-communicator-test
             transport/TcpCommunicatorTest.cpp
