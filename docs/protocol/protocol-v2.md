@@ -44,3 +44,23 @@ default payload ceiling is 64 MiB.
 
 Negotiation policy, connection auto-detection, and Protocol v1/v2 routing are
 intentionally deferred to the Protocol v2 integration increment.
+
+## Connection mode and sessions
+
+The frontend protocol preference is selected through `GVIRTUS_PROTOCOL`.
+Unset, empty, `v1`, and `1` select the legacy protocol; `v2` and `2` explicitly
+select Protocol v2. Unknown values fail validation instead of silently changing
+the wire protocol.
+
+The backend distinguishes v2 from v1 using the first four bytes. `GVR2` selects
+v2; every other prefix remains a Protocol v1 routine-name prefix and must be
+replayed intact when live routing is connected.
+
+A negotiated v2 connection owns a non-zero session ID. Request IDs start at
+one, increase monotonically, and cannot be reused. Session validation rejects
+zero IDs, cross-session frames, stale or duplicate request IDs, and all traffic
+after closure.
+
+The current integration boundary deliberately does not map numeric v2
+operations to legacy string routine names. That requires an authoritative API
+operation registry; guessing this mapping would make compatibility unsafe.

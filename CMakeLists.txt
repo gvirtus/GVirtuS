@@ -49,6 +49,7 @@ target_link_libraries(gvirtus-common stdc++fs ${CMAKE_DL_LIBS} ${LIBLOG4CPLUS})
 gvirtus_install_target(gvirtus-common)
 
 add_library(gvirtus-protocol-v2 STATIC
+        src/protocol/v2/Connection.cpp
         src/protocol/v2/Frame.cpp
         src/protocol/v2/Negotiation.cpp)
 target_include_directories(gvirtus-protocol-v2 PUBLIC

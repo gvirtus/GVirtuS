@@ -16,3 +16,7 @@ add_test(NAME protocol-v2-frame COMMAND protocol-v2-frame-test)
 add_executable(protocol-v2-negotiation-test protocol/NegotiationTest.cpp)
 target_link_libraries(protocol-v2-negotiation-test PRIVATE gvirtus-protocol-v2)
 add_test(NAME protocol-v2-negotiation COMMAND protocol-v2-negotiation-test)
+
+add_executable(protocol-v2-connection-test protocol/ConnectionTest.cpp)
+target_link_libraries(protocol-v2-connection-test PRIVATE gvirtus-protocol-v2)
+add_test(NAME protocol-v2-connection COMMAND protocol-v2-connection-test)

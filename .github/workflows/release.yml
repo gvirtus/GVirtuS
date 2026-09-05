@@ -29,7 +29,7 @@ jobs:
 
       - name: Build and test
         run: |
-          cmake --build build --target tcp-communicator-test protocol-v2-frame-test protocol-v2-negotiation-test --parallel 2
+          cmake --build build --target tcp-communicator-test protocol-v2-frame-test protocol-v2-negotiation-test protocol-v2-connection-test --parallel 2
           ctest --test-dir build --output-on-failure
 
       - name: Create source archive and checksum

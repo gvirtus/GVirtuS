@@ -36,7 +36,7 @@ jobs:
       - name: Build hardware-independent tests
         run: >-
           cmake --build build
-          --target tcp-communicator-test protocol-v2-frame-test protocol-v2-negotiation-test
+          --target tcp-communicator-test protocol-v2-frame-test protocol-v2-negotiation-test protocol-v2-connection-test
           --parallel 2
 
       - name: Run sanitizer tests
